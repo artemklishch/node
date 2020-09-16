@@ -1,0 +1,22 @@
+{
+  "name": "node-youtube",
+  "version": "1.0.0",
+  "description": "Node JS course for youtube",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon"
+  },
+  "keywords": [
+    "node",
+    "nodejs"
+  ],
+  "author": "Artem <artemklishch@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
