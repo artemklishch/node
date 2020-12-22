@@ -57,9 +57,11 @@ const server = http.createServer((req, res) => {
       "Content-Type": "text/html; charset=utf-8",
     });
     req.on("data", (data) => {
+      console.log("data", data);
       body.push(Buffer.from(data));
     });
     req.on("end", () => {
+      console.log("end", body);
       const message = body.toString().split("=")[1];
       res.end(`
         <h1>Ваше сообщение: ${message}</h1>

@@ -9,7 +9,7 @@ console.log(path.parse(__filename).base);
 
 console.log(path.join(__dirname, "test", "second.html"));
 console.log(path.resolve(__dirname, "./test", "second.html"));
-console.log(path.resolve(__dirname, "./test", "/second.html"));
+console.log(path.resolve(__dirname, "test", "/second.html"));
 
 console.log("\n");
 console.log(path.win32.basename("C:\\foo.html", ".html"));

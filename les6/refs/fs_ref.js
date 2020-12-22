@@ -43,10 +43,20 @@ const path = require("path");
 //   }
 // );
 
-// fs.unlink("/tmp/hello", (err) => {
-//   if (err) throw err;
-//   console.log("successfully deleted /tmp/hello");
+
+// fs.mkdir(path.join(__dirname, 'tmp'), (err) => {
+//   if(err) throw err;
+//   console.log('TMP created')
+// })
+// fs.writeFile(path.join(__dirname, "tmp", "textTmp.txt"), "Hello", (err) => {
+//   console.log("file created");
 // });
+// fs.unlink(path.join(__dirname, "tmp", "textTmp.txt"), (err) => {
+//   if (err) throw err;
+//   console.log("successfully deleted tmp");
+// });
+
+
 // (async function(path) {
 //     try {
 //       await fs.unlink(path);
@@ -56,19 +66,17 @@ const path = require("path");
 //     }
 //   })('/tmp/hello');
 
-fs.stat(path.join(__dirname, "notes", "theirnotes.txt"), (err, stats) => {
-  if (err) throw err;
-  console.log(`stats: ${JSON.stringify(stats)}`);
-});
+// fs.stat(path.join(__dirname, "notes", "theirnotes.txt"), (err, stats) => {
+//   if (err) throw err;
+//   console.log(`stats: ${JSON.stringify(stats)}`);
+// });
 
-
-
-async function print(path) {
-    const dir = await fs.promises.opendir(path);
-    console.log('0909090909', dir)
-    for await (const dirent of dir) {
-        console.log('sdfdfsdsfg', dirent)
-      console.log(dirent.name);
-    }
-  }
-  print('./').catch(console.error);
+// async function print(path) {
+//     const dir = await fs.promises.opendir(path);
+//     console.log('0909090909', dir)
+//     for await (const dirent of dir) {
+//         console.log('sdfdfsdsfg', dirent)
+//       console.log(dirent.name);
+//     }
+//   }
+//   print('./').catch(console.error);

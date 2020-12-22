@@ -1,4 +1,4 @@
-// console.log(process.argv);
+console.log(process.argv);
 function consoleToJSON() {
   const c = {};
   for (let i = 2; i < process.argv.length; i++) {
