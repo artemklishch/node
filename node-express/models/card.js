@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { cachedDataVersionTag } = require("v8");
 const p = path.join(path.dirname(require.main.filename), "data", "card.json");
 
 class Card {
@@ -21,6 +22,25 @@ class Card {
       fs.writeFile(p, JSON.stringify(card), (err) => {
         if (err) reject(err);
         resolve();
+      });
+    });
+  }
+  static async remove(id) {
+    const card = await Card.fetch();
+    const idx = card.courses.findIndex((c) => c.id === id);
+    const course = card.courses[idx];
+    if (course.count === 1) {
+      // удалить
+      card.courses = card.courses.filter((c) => c.id !== id);
+    } else {
+      // изменить количество
+      card.courses[idx].count--;
+    }
+    card.price -= course.price;
+    return new Promise((resolve, reject) => {
+      fs.writeFile(p, JSON.stringify(card), (err) => {
+        if (err) reject(err);
+        resolve(card);
       });
     });
   }

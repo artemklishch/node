@@ -17,5 +17,9 @@ router.get("/", async (req, res) => {
     price: card.price,
   });
 });
+router.delete("/remove/:id", async (req, res) => {
+  const card = await Card.remove(req.params.id);
+  res.status(200).json(card);
+});
 
 module.exports = router;
