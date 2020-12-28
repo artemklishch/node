@@ -1,5 +1,7 @@
 const express = require("express");
 const exphbs = require("express-handlebars");
+const mongoose = require("mongoose");
+
 const homeRoutes = require("./routes/home");
 const cardRoutes = require("./routes/card");
 const coursesRoutes = require("./routes/courses");
@@ -24,6 +26,21 @@ app.use("/add", addRoutes);
 app.use("/card", cardRoutes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT: ${PORT}`);
-});
+
+async function start() {
+  try {
+    const url =
+      "mongodb+srv://Artem:fG9cG4uNaHgEGky@cluster0.qnewn.mongodb.net/test?retryWrites=true&w=majority";
+    await mongoose.connect(url, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    app.listen(PORT, () => {
+      console.log(`Server is running on PORT: ${PORT}`);
+    });
+  } catch (e) {
+    console.log(e);
+  }
+}
+start();
+// const password = "fG9cG4uNaHgEGky";
