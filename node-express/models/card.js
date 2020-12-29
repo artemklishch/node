@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { cachedDataVersionTag } = require("v8");
 const p = path.join(path.dirname(require.main.filename), "data", "card.json");
 
 class Card {
