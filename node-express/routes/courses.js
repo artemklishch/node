@@ -9,7 +9,6 @@ router.get("/", async (req, res) => {
   const courses = await Course.find()
     .populate("userId", "email name") // вытаскивает конкретные данные из userId
     .select("price title img"); // вытаскивает конкретные данные из courses
-  console.log(courses);
   res.render("courses", {
     title: "Курсы",
     isCourses: true,
