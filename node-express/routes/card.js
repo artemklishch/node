@@ -10,6 +10,7 @@ function mapCartItems(cart) {
     count: c.count,
   }));
 }
+
 function computePrice(courses) {
   return courses.reduce((acc, item) => (acc += item.price * item.count), 0);
 }

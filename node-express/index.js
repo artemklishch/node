@@ -8,6 +8,7 @@ const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongodb-session")(session);
+const cserf = require("csurf");
 const varMiddleware = require("./middleware/variables");
 const userMiddleware = require("./middleware/user");
 
@@ -58,6 +59,7 @@ app.use(
     store,
   })
 );
+app.use(cserf());
 app.use(varMiddleware);
 app.use(userMiddleware);
 
