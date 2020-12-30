@@ -16,5 +16,9 @@
         <label for="img">URL картинки</label>
         <span class="helper-text" data-error="Введите адрес картинки"></span>
     </div>
+
+    <input type="hidden" name="_csrf" value="{{csrf}}">
+    <!-- это добавляется ко всем формам, к-е обрабатывают post запрос -->
+
     <button class="btn btn-primary">Добавить курс</button>
 </form>
