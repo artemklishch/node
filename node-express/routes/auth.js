@@ -7,6 +7,8 @@ router.get("/login", async (req, res) => {
   res.render("auth/login", {
     title: "Авторизация",
     isLogin: true,
+    registerError: req.flash("registerError"),
+    loginError: req.flash("loginError"),
   });
 });
 router.get("/logout", async (req, res) => {
@@ -31,10 +33,18 @@ router.post("/login", async (req, res) => {
           res.redirect("/");
         });
       } else {
-        res.redirect("/auth/login#login");
+        req.flash("loginError", "Такого пароля нет");
+        req.session.save((err) => {
+          if (err) throw err;
+          res.redirect("/auth/login#login");
+        });
       }
     } else {
-      res.redirect("/auth/login#login");
+      req.flash("loginError", "Такого пользователя не существует");
+      req.session.save((err) => {
+        if (err) throw err;
+        res.redirect("/auth/login#login");
+      });
     }
   } catch (e) {
     console.log(e);
@@ -45,7 +55,11 @@ router.post("/register", async (req, res) => {
     const { email, password, repeat, name } = req.body;
     const candidate = await User.findOne({ email });
     if (candidate) {
-      res.redirect("/auth/login#register");
+      req.flash("registerError", "Пользователь с таким email уже существует");
+      req.session.save((err) => {
+        if (err) throw err;
+        res.redirect("/auth/login#register");
+      });
     } else {
       const hashPassword = await bcrypt.hash(password, 10);
       const user = new User({

@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongodb-session")(session);
 const cserf = require("csurf");
+const flash = require("connect-flash");
 const varMiddleware = require("./middleware/variables");
 const userMiddleware = require("./middleware/user");
 
@@ -60,6 +61,7 @@ app.use(
   })
 );
 app.use(cserf());
+app.use(flash());
 app.use(varMiddleware);
 app.use(userMiddleware);
 
