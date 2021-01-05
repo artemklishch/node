@@ -9,6 +9,8 @@ console.log(path.parse(__filename).base);
 
 console.log(path.join(__dirname, "test", "second.html"));
 console.log(path.resolve(__dirname, "./test", "second.html"));
+console.log(path.resolve(__dirname, "/test", "second.html"));
+console.log(path.resolve(__dirname, "/test", "/second.html"));
 console.log(path.resolve(__dirname, "test", "/second.html"));
 
 console.log("\n");
