@@ -1,7 +1,9 @@
 const { Router } = require("express");
 const router = Router();
+const { validationResult } = require("express-validator");
 const Course = require("../models/course");
 const auth = require("../middleware/auth");
+const { courseValidators } = require("../utils/validators");
 // const mongooseToObj = require('../helpers/funcsForTransform')
 // const multipleMongooseToObj = require('../helpers/funcsForTransform')
 
@@ -26,9 +28,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/edit", auth, async (req, res) => {
+router.post("/edit", auth, courseValidators, async (req, res) => {
+  const errors = await validationResult(req);
+  const { id } = req.body;
+  if (!errors.isEmpty()) {
+    return res.status(422).redirect(`/courses/${id}/edit?allow=true`);
+  }
   try {
-    const { id } = req.body;
     delete req.body.id;
     const course = await Course.findById(id);
     if (!isOwner(course, req)) {
