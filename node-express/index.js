@@ -6,6 +6,8 @@ const {
 } = require("@handlebars/allow-prototype-access");
 const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
+const helmet = require("helmet");
+const compression = require("compression");
 const session = require("express-session");
 const MongoStore = require("connect-mongodb-session")(session);
 const cserf = require("csurf");
@@ -13,12 +15,15 @@ const flash = require("connect-flash");
 
 const varMiddleware = require("./middleware/variables");
 const userMiddleware = require("./middleware/user");
+const errorMiddleware = require("./middleware/error");
+const fileMiddleware = require("./middleware/file");
 const homeRoutes = require("./routes/home");
 const cardRoutes = require("./routes/card");
 const coursesRoutes = require("./routes/courses");
 const addRoutes = require("./routes/add");
 const ordersRoutes = require("./routes/orders");
 const authRoutes = require("./routes/auth");
+const profileRoutes = require("./routes/profile");
 const keys = require("./keys");
 
 // const User = require("./models/user");
@@ -50,6 +55,7 @@ app.set("views", "views");
 // });
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
@@ -59,8 +65,28 @@ app.use(
     store,
   })
 );
+app.use(fileMiddleware.single("avatar")); // после сесси и перед полдключением cserf
 app.use(cserf());
 app.use(flash());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+); // это работает, но тот, что ниже вроде бы как чем-то лучше, предназначено для дополнительной защиты, на данный момент не понимаю какой
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         "default-src": ["'self'"],
+//         "script-src": ["'self'", "example.com"],
+//         "object-src": ["'none'"],
+//         "style-src": ["'self'", "example.com"],
+//         "img-src": ["'self'", "https:"],
+//       },
+//     },
+//   })
+// );
+app.use(compression());
 app.use(varMiddleware);
 app.use(userMiddleware);
 
@@ -70,6 +96,9 @@ app.use("/add", addRoutes);
 app.use("/card", cardRoutes);
 app.use("/orders", ordersRoutes);
 app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
+
+app.use(errorMiddleware); // прописывать в конце, после других
 
 const PORT = process.env.PORT || 3000;
 

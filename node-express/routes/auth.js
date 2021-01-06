@@ -1,13 +1,16 @@
 const { Router } = require("express");
+const router = Router();
+require("dotenv").config(); // без этого не работает .env
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+// const { body, validationResult } = require("express-validator/check"); // устаревший способ, отменен
+const { validationResult } = require("express-validator"); // здесь есть функции body (для проверки полей формы), query (для проверки квери параметров), check (для проверки всего)
 const nodemailer = require("nodemailer");
 const sendgrid = require("nodemailer-sendgrid-transport");
 const keys = require("../keys");
 const regEmail = require("../emails/registration");
 const resetEmail = require("../emails/reset");
-const router = Router();
-require("dotenv").config(); // без этого не работает .env
+const { registerValidators, logInValidators } = require("../utils/validators");
 const User = require("../models/user");
 
 // const transporter = nodemailer.createTransport(
@@ -39,11 +42,16 @@ router.get("/logout", async (req, res) => {
     res.redirect("/auth/login#login");
   });
 });
-router.post("/login", async (req, res) => {
+router.post("/login", logInValidators, async (req, res) => {
   try {
+    const errors = await validationResult(req); // здесь await мсы ставим, чтоб всегда отображать ошибку, т.к. если не ставить,то сообщение не будет успевать записываться
+    if (!errors.isEmpty()) {
+      await req.flash("loginError", errors.array()[0].msg); // возвращает массив с объектами ошибок, а из свойства msg достаем сообщение
+      return res.status(422).redirect("/auth/login#login");
+    }
     const { email, password } = req.body;
     const candidate = await User.findOne({ email });
-    if (candidate) {
+    // if (candidate) {
       const areSame = await bcrypt.compare(password, candidate.password);
       if (areSame) {
         req.session.user = candidate;
@@ -59,28 +67,33 @@ router.post("/login", async (req, res) => {
           res.redirect("/auth/login#login");
         });
       }
-    } else {
-      req.flash("loginError", "Такого пользователя не существует");
-      req.session.save((err) => {
-        if (err) throw err;
-        res.redirect("/auth/login#login");
-      });
-    }
+    // } else {
+    //   req.flash("loginError", "Такого пользователя не существует");
+    //   req.session.save((err) => {
+    //     if (err) throw err;
+    //     res.redirect("/auth/login#login");
+    //   });
+    // }
   } catch (e) {
     console.log(e);
   }
 });
-router.post("/register", async (req, res) => {
+router.post("/register", registerValidators, async (req, res) => {
   try {
-    const { email, password, repeat, name } = req.body;
-    const candidate = await User.findOne({ email });
-    if (candidate) {
-      req.flash("registerError", "Пользователь с таким email уже существует");
-      req.session.save((err) => {
-        if (err) throw err;
-        res.redirect("/auth/login#register");
-      });
-    } else {
+    const { email, password, confirm, name } = req.body; // confirm здесь не нужно 
+    // const candidate = await User.findOne({ email });
+    const errors = await validationResult(req); // здесь await мсы ставим, чтоб всегда отображать ошибку, т.к. если не ставить,то сообщение не будет успевать записываться
+    if (!errors.isEmpty()) {
+      req.flash("registerError", errors.array()[0].msg); // возвращает массив с объектами ошибок, а из свойства msg достаем сообщение
+      return res.status(422).redirect("/auth/login#register");
+    }
+    // if (candidate) {
+    //   req.flash("registerError", "Пользователь с таким email уже существует");
+    //   req.session.save((err) => {
+    //     if (err) throw err;
+    //     res.redirect("/auth/login#register");
+    //   });
+    // } else {
       const hashPassword = await bcrypt.hash(password, 10);
       const user = new User({
         email,
@@ -91,7 +104,7 @@ router.post("/register", async (req, res) => {
       await user.save();
       res.redirect("/auth/login#login");
       await transporter.sendMail(regEmail(email));
-    }
+    // }
   } catch (e) {
     console.log(e);
   }
