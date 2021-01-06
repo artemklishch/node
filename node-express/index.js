@@ -6,6 +6,8 @@ const {
 } = require("@handlebars/allow-prototype-access");
 const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
+const helmet = require("helmet");
+const compression = require("compression");
 const session = require("express-session");
 const MongoStore = require("connect-mongodb-session")(session);
 const cserf = require("csurf");
@@ -53,7 +55,7 @@ app.set("views", "views");
 // });
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use('/images', express.static(path.join(__dirname, "images")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
@@ -66,6 +68,25 @@ app.use(
 app.use(fileMiddleware.single("avatar")); // после сесси и перед полдключением cserf
 app.use(cserf());
 app.use(flash());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+); // это работает, но тот, что ниже вроде бы как чем-то лучше, предназначено для дополнительной защиты, на данный момент не понимаю какой
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         "default-src": ["'self'"],
+//         "script-src": ["'self'", "example.com"],
+//         "object-src": ["'none'"],
+//         "style-src": ["'self'", "example.com"],
+//         "img-src": ["'self'", "https:"],
+//       },
+//     },
+//   })
+// );
+app.use(compression());
 app.use(varMiddleware);
 app.use(userMiddleware);
 
