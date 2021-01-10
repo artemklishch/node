@@ -55,7 +55,7 @@ app.set("views", "views");
 // });
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/images", express.static(path.join(__dirname, "images"))); // это доблавлено, чтоб подгружались картинки, что хранятся в папке в фаловой системе
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
@@ -67,7 +67,7 @@ app.use(
 );
 app.use(fileMiddleware.single("avatar")); // после сесси и перед полдключением cserf
 app.use(cserf());
-app.use(flash());
+app.use(flash()); // для вывода текста ошибок, который мы делаем при срабатывании валидатора
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -86,7 +86,7 @@ app.use(
 //     },
 //   })
 // );
-app.use(compression());
+app.use(compression()); // для уменьшения размера файлов или что-то типа такого, скомпрессоввует
 app.use(varMiddleware);
 app.use(userMiddleware);
 
@@ -104,15 +104,15 @@ const PORT = process.env.PORT || 3000;
 
 async function start() {
   try {
-    const url =
-      // "mongodb+srv://Artem:fG9cG4uNaHgEGky@cluster0.qnewn.mongodb.net/test?retryWrites=true&w=majority";
-      // "mongodb+srv://Artem:fG9cG4uNaHgEGky@cluster0.qnewn.mongodb.net/shop";
-      // await mongoose.connect(url, {
-      await mongoose.connect(keys.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-      });
+    // const url =
+    // "mongodb+srv://Artem:fG9cG4uNaHgEGky@cluster0.qnewn.mongodb.net/test?retryWrites=true&w=majority";
+    // "mongodb+srv://Artem:fG9cG4uNaHgEGky@cluster0.qnewn.mongodb.net/shop";
+    // await mongoose.connect(url, {
+    await mongoose.connect(keys.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    });
     // mongoose.set('useFindAndModify', false);
     // const candidate = await User.findOne();
     // if (!candidate) {
