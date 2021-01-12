@@ -7,7 +7,6 @@ const PASSWORD = "klishch_mysql_1";
 const sequelize = new Sequelize(DB_NAME, USER_NAME, PASSWORD, {
   host: "localhost",
   dialect: "mysql",
-  multipleStatements: true
 });
 
 module.exports = sequelize;

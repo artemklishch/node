@@ -8,7 +8,7 @@ const todoRoutes = require("./routes/todo");
 
 app.use(express.static(path.join(__dirname, "public"))); // делаем статической папку, т.к. нам не придется обрабатывать много get запросов, т.к. теперь используем фреймверк
 
-app.use(express.json())
+app.use(express.json()) // это нужно, чтоб данные при запросах были в json формате всегда
 // routes
 app.use("/api/todo", todoRoutes);
 
