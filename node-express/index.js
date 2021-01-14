@@ -56,7 +56,7 @@ app.set("views", "views");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images"))); // это доблавлено, чтоб подгружались картинки, что хранятся в папке в фаловой системе
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); // чтоб считывалось с кодировкой utf-8
 app.use(
   session({
     secret: keys.SESSION_SECRET,

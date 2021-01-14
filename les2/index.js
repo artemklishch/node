@@ -17,7 +17,6 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const { ESRCH } = require("constants");
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, {

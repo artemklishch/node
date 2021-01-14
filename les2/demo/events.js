@@ -22,7 +22,7 @@ class Dispatcher extends EventEmitter {
   }
 }
 const dis = new Dispatcher();
-dis.dispatch("aa", { ABC: 22 });
+dis.dispatch("aa", { ABC: 26 }); // здесь еще не подписались на прослушивание события, поэтому оно не реально не диспатчится
 dis.subscribe("aa", (data) => {
   console.log("ON: event aa", data);
 });
